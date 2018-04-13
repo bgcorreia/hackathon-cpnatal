@@ -31,7 +31,13 @@ class justicafacilDatabase {
 
         $query = "SELECT nrprocesso,parte_autora,parte_re,classe_processual FROM processos WHERE classe_processual LIKE '%{$classe}%' ORDER BY nrprocesso";
 
-        return $this->banco->query($query);
+        echo $query;
+
+        $retorno = $this->banco->query($query);
+
+        //echo $retorno;
+
+        return $retorno;
   
     }
 
@@ -52,5 +58,19 @@ class justicafacilDatabase {
     }
 
 }
+
+$database = new justicafacilDatabase();
+
+$resultado = $database->searchClasses("PROCEDIMENTO COMUM");
+
+while ($row = $resultado->fetch_assoc()) {
+  echo "<tr>\n" . 
+  "<td>" . $row['nrprocesso'] . "</td>\n" .
+  "<td>" . $row['parte_autora'] . "</td>\n" .
+  "<td>" . $row['parte_re'] . "</td>\n" .
+  "<td>" . $row['classe_processual'] . "</td>\n" .
+  "</tr>\n";
+}
+
 
 ?>

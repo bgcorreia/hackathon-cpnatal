@@ -41,7 +41,7 @@
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
-          <a class="nav-link" href="advogados.php">
+          <a class="nav-link" href="advogados.html">
             <i class="fa fa-fw fa-table"></i>
             <span class="nav-link-text">Advogados</span>
           </a>
@@ -164,11 +164,16 @@
         <!--<li class="breadcrumb-item">
           <a href="#">Classe Processual</a>
         </li>-->
-        <li class="breadcrumb-item active">Classe Processual</li>
+        <li class="breadcrumb-item active">Advogados</li>
       </ol>
 
       <form method="POST">
         <div class="col-lg-4">
+          <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+          </div>
+          <!--
           <select class="custom-select d-block w-100" name="Categorias" id="Categorias" required="">
             <option value="">Escolha a classe...</option>
             <?php
@@ -182,6 +187,7 @@
             ?>
           </select>
           <input type="submit" name="submit" value="Filter" />
+        -->
         </div>
       </form>
 
