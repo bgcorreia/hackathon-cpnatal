@@ -1,7 +1,5 @@
 <?php
 
-//$teste=$argv[1];
-
 class justicafacilDatabase {
     private $dbhost = "172.29.0.2";
     private $dbuser = "jf";
@@ -43,11 +41,41 @@ class justicafacilDatabase {
   
     }
 
-    public function searchMagistrado($magistrado){
+    public function searchMagistrado($magistrado,$parte_re,$pro_improcedente){
 
-        $query = "SELECT * FROM processos WHERE magistrado LIKE '%{$magistrado}%'";
+        echo "<script>console.log( 'MAGISTRADO: " . $magistrado . "' );</script>";
+        echo "<script>console.log( 'PARTE RE: " . $parte_re . "' );</script>";
+        echo "<script>console.log( 'SENTENCA: " . $pro_improcedente . "' );</script>";
 
-        return $this->banco->query($query);
+        if ($parte_re === '' and $pro_improcedente === ''){
+        
+            $query = "SELECT * FROM processos WHERE magistrado LIKE '%{$magistrado}%'";
+
+            echo "<script>console.log( 'ENTROU NO IF' );</script>";
+
+            return $this->banco->query($query);
+        
+        } elseif ($parte_re === '') {
+
+            $query = "SELECT * FROM processos WHERE magistrado LIKE '%{$magistrado}%' AND pro_improcedente LIKE '%{$pro_improcedente}%'";
+
+            echo "<script>console.log( 'ENTROU NO ELSEIF' );</script>";
+
+            //echo "<script>console.log( 'QUERY: " . $query . "' );</script>";
+
+            return $this->banco->query($query);
+
+        } else {
+
+            $query = "SELECT * FROM processos WHERE magistrado LIKE '%{$magistrado}%' AND parte_re LIKE '%{$parte_re}%' AND pro_improcedente LIKE '%{$pro_improcedente}%'";
+
+            echo "<script>console.log( 'ENTROU NO ELSE' );</script>";
+
+            //echo "<script>console.log( 'QUERY: " . $query . "' );</script>";
+
+            return $this->banco->query($query);
+
+        }
 
     }
 

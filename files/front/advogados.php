@@ -197,11 +197,11 @@
         <div class="card mb-3">
           <style type="text/css">
             #myChart{
-              height: 400px!important;
+              height: 200px!important;
             }
           </style>
 
-          <canvas id="myChart" width="1024" style="height: 300px; margin: 0; "></canvas>
+          <canvas id="myChart" width="1024" style="height: 200px; margin: 0; "></canvas>
           <script>
             // Nossos rótulos para o eixo X
             var years = [1500,1600,1700,1750,1800,1850,1900,1950,1999,2050];

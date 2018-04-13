@@ -16,6 +16,7 @@
   <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
   <link href="css/sb-admin.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -168,41 +169,71 @@
       </ol>
 
       <form method="POST">
-        <div class="col-lg-4">
-          <div class="form-group">
-            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Digite o nome do Magistrado">
-            
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label for="labelMagistrado">Nome do Magistrado:</label>
+              <input required="required" type="text2" class="form-control" name="nomeMagistrado" id="nomeMagistrado" placeholder="Digite o nome do Magistrado">
+            </div>
           </div>
-          <!--
-          <select class="custom-select d-block w-100" name="Categorias" id="Categorias" required="">
-            <option value="">Escolha a classe...</option>
-            <?php
-
-              $resultado = $database->listClasses();
-
-              while ($row = $resultado->fetch_assoc()) {
-                  echo "<option value=\"" . utf8_encode($row['classe_processual']) . "\">" . utf8_encode($row['classe_processual']) . "</option>";
-              }
-
-            ?>
-          </select>
-          <input type="submit" name="submit" value="Filter" />
-        -->
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label for="labelParteRe">Parte Ré:</label>
+              <input type="text2" class="form-control" name="nomeParteRe" id="nomeParteRe" placeholder="Digite a Parte Ré">
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label for="labelSentenca">Sentença:</label>
+              <select class="form-control" name="selectSetenca">
+                <option selected value="">Todas</option>
+                <option value="P">Procedente</option>
+                <option value="I">Improcedente</option>
+                <option value="-">Sem julgamento</option>
+              </select>
+            </div>
+          </div>
         </div>
+        <input style="margin: 0 0 15px 0;" type="submit" name="submit" value="Filter" /> 
       </form>
 
-        <div class="col-lg-4" style="margin-bottom: 10px"></div>
 
-        <div class="col-lg-4">
-            <!-- Example Pie Chart Card-->
-            <div class="card mb-3">
-              <div class="card-header">
-                <i class="fa fa-pie-chart"></i> Pie Chart Example</div>
-              <div class="card-body">
-                <canvas id="myPieChart" width="100%" height="100"></canvas>
-              </div>
-              <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-            </div>
+      <div class="col-lg-12" style="margin: 0 0 10px 0;">
+
+        <div class="card mb-3">
+          <style type="text/css">
+            #myChart{
+              height: 200px!important;
+            }
+          </style>
+
+          <canvas id="myChart" width="1024" style="height: 200px; margin: 0; "></canvas>
+          <script>
+            // Nossos rótulos para o eixo X
+            var years = [1500,1600,1700,1750,1800,1850,1900,1950,1999,2050];
+
+            // Para desenhar as linhas
+            var africa = [86,114,106,106,107,111,133,221,783,2478];
+            var asia = [282,350,411,502,635,809,947,1402,3700,5267];
+            var europe = [168,170,178,190,203,276,408,547,675,734];
+            var latinAmerica = [40,20,10,16,24,38,74,167,508,784];
+            var northAmerica = [6,3,2,2,7,26,82,172,312,433];
+
+            var ctx = document.getElementById("myChart");
+            var myChart = new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: years,
+                datasets: [
+                  { 
+                    data: africa,
+                    label: "Categoria"
+                  }
+                ]
+              }
+            });
+
+          </script>
         </div>
 
         <div class="card-body">
@@ -211,9 +242,11 @@
               <thead>
                 <tr>
                   <th>Nº Processo</th>
+                  <th>Magistrado</th>
                   <th>Parte Autora</th>
                   <th>Parte Ré</th>
                   <th>Classe Processual</th>
+                  <th>Sentença</th>
                 </tr>
               </thead>
               <tbody>
@@ -221,16 +254,20 @@
 
                     if ( isset($_POST['submit']) ) {
 
-                      $classe_processual = utf8_decode($_POST['Categorias']);
+                      $magistrado = utf8_decode($_POST['nomeMagistrado']);
+                      $parte_re = utf8_decode($_POST['nomeParteRe']);
+                      $pro_improcedente = $_POST['selectSetenca'];
                     
-                      $resultado = $database->searchClasses($classe_processual);
+                      $resultado = $database->searchMagistrado($magistrado,$parte_re,$pro_improcedente);
 
                       while ($row = $resultado->fetch_assoc()) {
                         echo "<tr>\n" . 
-                        "<td>" . utf8_encode($row['nrprocesso']) . "</td>\n" .
+                        "<td><a href=\"http://localhost/peticoes/" . utf8_encode($row['nrprocesso']) . ".pdf\">" . utf8_encode($row['nrprocesso']) . "</a></td>\n" .
+                        "<td>" . utf8_encode($row['magistrado']) . "</td>\n" .
                         "<td>" . utf8_encode($row['parte_autora']) . "</td>\n" .
                         "<td>" . utf8_encode($row['parte_re']) . "</td>\n" .
                         "<td>" . utf8_encode($row['classe_processual']) . "</td>\n" .
+                        "<td>" . utf8_encode($row['pro_improcedente']) . "</td>\n" .
                         "</tr>\n";
                       }
 
@@ -241,9 +278,11 @@
               <tfoot>
                 <tr>
                   <th>Nº Processo</th>
+                  <th>Magistrado</th>
                   <th>Parte Autora</th>
                   <th>Parte Ré</th>
                   <th>Classe Processual</th>
+                  <th>Sentença</th>
                 </tr>
               </tfoot>
               <tbody>
