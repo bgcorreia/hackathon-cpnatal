@@ -18,7 +18,7 @@ services:
             - backend
 
     php:
-        image: php:7-fpm
+        build: ./php
         container_name: php_jf
         restart: always
         volumes:
