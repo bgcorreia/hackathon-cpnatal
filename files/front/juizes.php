@@ -19,28 +19,29 @@
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
+  <?php include("db.php"); $database = new justicafacilDatabase();?>
   <!-- Navigation-->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-    <a class="navbar-brand" href="index.html">Justiça Fácil</a>
+    <a class="navbar-brand" href="index.php">Justiça Fácil</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
-          <a class="nav-link" href="classe-processual.html">
+          <a class="nav-link" href="classe-processual.php">
             <i class="fa fa-fw fa-table"></i>
             <span class="nav-link-text">Classe Processual</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
-          <a class="nav-link" href="juiz.html">
+          <a class="nav-link" href="juizes.php">
             <i class="fa fa-fw fa-table"></i>
             <span class="nav-link-text">Juizes</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
-          <a class="nav-link" href="advogados.html">
+          <a class="nav-link" href="advogados.php">
             <i class="fa fa-fw fa-table"></i>
             <span class="nav-link-text">Advogados</span>
           </a>
@@ -163,69 +164,32 @@
         <!--<li class="breadcrumb-item">
           <a href="#">Classe Processual</a>
         </li>-->
-        <li class="breadcrumb-item active">Classe Processual</li>
+        <li class="breadcrumb-item active">Juizes</li>
       </ol>
+
+      <form method="POST">
         <div class="col-lg-4">
-          <select class="custom-select d-block w-100" id="country" required="">
-            <option value="">Choose...</option>
+          <div class="form-group">
+            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Digite o nome do Magistrado">
+            
+          </div>
+          <!--
+          <select class="custom-select d-block w-100" name="Categorias" id="Categorias" required="">
+            <option value="">Escolha a classe...</option>
             <?php
 
-            //$teste=$argv[1];
+              $resultado = $database->listClasses();
 
-            class justicafacilDatabase {
-                private $dbhost = "172.29.0.2";
-                private $dbuser = "jf";
-                private $dbpass = "Q8ScP6Pjq3NjatXz";
-                private $dbname = "justicafacil";
-                public $banco;
-
-                public function __construct()
-                {
-                    $this->banco = new mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname);
-                }
-
-                public function __destruct()
-                {
-                    $this->banco->close();
-                }
-
-                public function listClasses(){
-
-                    $query = "SELECT DISTINCT classe_processual FROM processos";
-
-                    return $this->banco->query($query);
-              
-                }
-
-                public function searchAdvogado($advogado){
-
-                    $query = "SELECT * FROM processos WHERE advogado LIKE '%{$advogado}%'";
-
-                    return $this->banco->query($query);
-              
-                }
-
-                public function searchMagistrado($magistrado){
-
-                    $query = "SELECT * FROM processos WHERE magistrado LIKE '%{$magistrado}%'";
-
-                    return $this->banco->query($query);
-
-                }
-
-            }
-
-            $database = new justicafacilDatabase();
-
-            $resultado = $database->listClasses();
-
-            while ($row = $resultado->fetch_assoc()) {
-                echo $row['classe_processual'];
-            }
+              while ($row = $resultado->fetch_assoc()) {
+                  echo "<option value=\"" . utf8_encode($row['classe_processual']) . "\">" . utf8_encode($row['classe_processual']) . "</option>";
+              }
 
             ?>
           </select>
+          <input type="submit" name="submit" value="Filter" />
+        -->
         </div>
+      </form>
 
         <div class="col-lg-4" style="margin-bottom: 10px"></div>
 
@@ -247,27 +211,46 @@
               <thead>
                 <tr>
                   <th>Nº Processo</th>
-                  <th>Position</th>
-                  <th>Office</th>
-                  <th>Age</th>
-                  <th>Start date</th>
-                  <th>Salary</th>
+                  <th>Parte Autora</th>
+                  <th>Parte Ré</th>
+                  <th>Classe Processual</th>
                 </tr>
               </thead>
+              <tbody>
+                  <?php
+
+                    if ( isset($_POST['submit']) ) {
+
+                      $classe_processual = utf8_decode($_POST['Categorias']);
+                    
+                      $resultado = $database->searchClasses($classe_processual);
+
+                      while ($row = $resultado->fetch_assoc()) {
+                        echo "<tr>\n" . 
+                        "<td>" . utf8_encode($row['nrprocesso']) . "</td>\n" .
+                        "<td>" . utf8_encode($row['parte_autora']) . "</td>\n" .
+                        "<td>" . utf8_encode($row['parte_re']) . "</td>\n" .
+                        "<td>" . utf8_encode($row['classe_processual']) . "</td>\n" .
+                        "</tr>\n";
+                      }
+
+                    }
+
+                  ?>
+              </tbody>
               <tfoot>
                 <tr>
-                  <th>Name</th>
-                  <th>Position</th>
-                  <th>Office</th>
-                  <th>Age</th>
-                  <th>Start date</th>
-                  <th>Salary</th>
+                  <th>Nº Processo</th>
+                  <th>Parte Autora</th>
+                  <th>Parte Ré</th>
+                  <th>Classe Processual</th>
                 </tr>
               </tfoot>
               <tbody>
               </tbody>
             </table>
           </div>
+
         </div>
         <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
       </div>

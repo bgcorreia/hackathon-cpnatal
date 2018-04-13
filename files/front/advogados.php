@@ -16,32 +16,33 @@
   <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
   <link href="css/sb-admin.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
   <?php include("db.php"); $database = new justicafacilDatabase();?>
   <!-- Navigation-->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-    <a class="navbar-brand" href="index.html">Justiça Fácil</a>
+    <a class="navbar-brand" href="index.php">Justiça Fácil</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
-          <a class="nav-link" href="classe-processual.html">
+          <a class="nav-link" href="classe-processual.php">
             <i class="fa fa-fw fa-table"></i>
             <span class="nav-link-text">Classe Processual</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
-          <a class="nav-link" href="juiz.html">
+          <a class="nav-link" href="juizes.php">
             <i class="fa fa-fw fa-table"></i>
             <span class="nav-link-text">Juizes</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
-          <a class="nav-link" href="advogados.html">
+          <a class="nav-link" href="advogados.php">
             <i class="fa fa-fw fa-table"></i>
             <span class="nav-link-text">Advogados</span>
           </a>
@@ -167,41 +168,69 @@
         <li class="breadcrumb-item active">Advogados</li>
       </ol>
 
+    <div class="col-lg-12">
       <form method="POST">
-        <div class="col-lg-4">
+        <div class="row">
+          <div class="col-lg-8">
           <div class="form-group">
-            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+            <input type="inputAdvogado" class="form-control" name="Categorias" id="Categorias" placeholder="Digite o nome do Advogado">
+            <input type="submit" name="submit" value="Filter" />
           </div>
-          <!--
-          <select class="custom-select d-block w-100" name="Categorias" id="Categorias" required="">
-            <option value="">Escolha a classe...</option>
-            <?php
+        </div><div class="col-lg-2">
+          <div class="form-group">
+            <input type="inputAdvogado" class="form-control" name="Categorias" id="Categorias" placeholder="Preencha a data">
+            <input type="submit" name="submit" value="Filter" />
+          </div>
 
-              $resultado = $database->listClasses();
-
-              while ($row = $resultado->fetch_assoc()) {
-                  echo "<option value=\"" . utf8_encode($row['classe_processual']) . "\">" . utf8_encode($row['classe_processual']) . "</option>";
-              }
-
-            ?>
-          </select>
-          <input type="submit" name="submit" value="Filter" />
-        -->
+        </div><div class="col-lg-2">
+          <div class="form-group">
+            <input type="inputAdvogado" class="form-control" name="Categorias" id="Categorias" placeholder="Digite a Categoria">
+            <input type="submit" name="submit" value="Filter" />
+          </div>
         </div>
+        </div> 
       </form>
+    </div>
 
-        <div class="col-lg-4" style="margin-bottom: 10px"></div>
+        <div class="col-lg-12" style="margin: 0 0 10px 0;">
 
-        <div class="col-lg-4">
-            <!-- Example Pie Chart Card-->
-            <div class="card mb-3">
-              <div class="card-header">
-                <i class="fa fa-pie-chart"></i> Pie Chart Example</div>
-              <div class="card-body">
-                <canvas id="myPieChart" width="100%" height="100"></canvas>
-              </div>
-              <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-            </div>
+        <div class="card mb-3">
+          <style type="text/css">
+            #myChart{
+              height: 400px!important;
+            }
+          </style>
+
+          <canvas id="myChart" width="1024" style="height: 300px; margin: 0; "></canvas>
+          <script>
+            // Nossos rótulos para o eixo X
+            var years = [1500,1600,1700,1750,1800,1850,1900,1950,1999,2050];
+
+            // Para desenhar as linhas
+            var africa = [86,114,106,106,107,111,133,221,783,2478];
+            var asia = [282,350,411,502,635,809,947,1402,3700,5267];
+            var europe = [168,170,178,190,203,276,408,547,675,734];
+            var latinAmerica = [40,20,10,16,24,38,74,167,508,784];
+            var northAmerica = [6,3,2,2,7,26,82,172,312,433];
+
+            var ctx = document.getElementById("myChart");
+            var myChart = new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: years,
+                datasets: [
+                  { 
+                    data: africa,
+                    label: "Categoria"
+                  }
+                ]
+              }
+            });
+
+          </script>
+
+        </div>
+
         </div>
 
         <div class="card-body">
@@ -210,6 +239,7 @@
               <thead>
                 <tr>
                   <th>Nº Processo</th>
+                  <th>Advogado</th>
                   <th>Parte Autora</th>
                   <th>Parte Ré</th>
                   <th>Classe Processual</th>
@@ -222,11 +252,12 @@
 
                       $classe_processual = utf8_decode($_POST['Categorias']);
                     
-                      $resultado = $database->searchClasses($classe_processual);
+                      $resultado = $database->searchAdvogado($classe_processual);
 
                       while ($row = $resultado->fetch_assoc()) {
                         echo "<tr>\n" . 
                         "<td>" . utf8_encode($row['nrprocesso']) . "</td>\n" .
+                        "<td>" . utf8_encode($row['advogado']) . "</td>\n" .
                         "<td>" . utf8_encode($row['parte_autora']) . "</td>\n" .
                         "<td>" . utf8_encode($row['parte_re']) . "</td>\n" .
                         "<td>" . utf8_encode($row['classe_processual']) . "</td>\n" .
@@ -240,6 +271,7 @@
               <tfoot>
                 <tr>
                   <th>Nº Processo</th>
+                  <th>Advogado</th>
                   <th>Parte Autora</th>
                   <th>Parte Ré</th>
                   <th>Classe Processual</th>
@@ -298,6 +330,7 @@
     <!-- Custom scripts for this page-->
     <script src="js/sb-admin-datatables.min.js"></script>
     <script src="js/sb-admin-charts.min.js"></script>
+
   </div>
 </body>
 
