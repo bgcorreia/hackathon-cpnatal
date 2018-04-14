@@ -334,6 +334,7 @@
             }
 
             //$row = mysql_query("SELECT * pro_improcedente FROM processos WHERE nrprocesso LIKE $nrprocesso", );
+            //$row_procedente = mysql_query("SELECT pro_improcedente WHERE pro_improcedente = "P" FROM processos WHERE nrprocesso LIKE $nrprocesso", );
             //$num_row = mysqli_fecth_row($row); <- quantidade total de linhas em pro_improcedente
 
             //quantidade em processo - 2 / num_row 
@@ -438,7 +439,7 @@
 
                         while ($row = $resultado->fetch_assoc()) {
                           echo "<tr>\n"; 
-                          echo "<td><a href=\"https://justicafacil.com/peticoes/" . utf8_encode($row['nrprocesso']) . ".pdf\">" . utf8_encode($row['nrprocesso']) . "</a></td>\n";
+                          echo "<td><a href=\"http://localhost/peticoes/" . utf8_encode($row['nrprocesso']) . ".pdf\">" . utf8_encode($row['nrprocesso']) . "</a></td>\n";
                           echo "<td>" . utf8_encode($row['magistrado']) . "</td>\n";
                           echo "<td>" . utf8_encode($row['parte_autora']) . "</td>\n";
                           echo "<td>" . utf8_encode($row['parte_re']) . "</td>\n";
@@ -446,11 +447,11 @@
 
                           if (utf8_encode($row['pro_improcedente']) == "P"){
 
-                            echo "<td><a href=\"https://justicafacil.com/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-success\">PROCEDENTE</span> </a></td>\n";
+                            echo "<td><a href=\"http://localhost/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-success\">PROCEDENTE</span> </a></td>\n";
 
                           } elseif (utf8_encode($row['pro_improcedente']) == "I"){
 
-                            echo "<td><a href=\"https://justicafacil.com/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-danger\">IMPROCEDENTE</span> </a></td>\n";
+                            echo "<td><a href=\"http://localhost/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-danger\">IMPROCEDENTE</span> </a></td>\n";
 
                           } else {
 
