@@ -1,7 +1,7 @@
 <?php
 
 class justicafacilDatabase {
-    private $dbhost = "172.29.0.2";
+    private $dbhost = "db_jf";
     private $dbuser = "jf";
     private $dbpass = "Q8ScP6Pjq3NjatXz";
     private $dbname = "justicafacil";
