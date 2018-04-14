@@ -41,41 +41,36 @@ class justicafacilDatabase {
   
     }
 
-    public function searchMagistrado($magistrado,$parte_re,$pro_improcedente){
+    public function searchMagistrado($magistrado,$parte_re,$pro_improcedente,$nrprocesso){
 
-        echo "<script>console.log( 'MAGISTRADO: " . $magistrado . "' );</script>";
-        echo "<script>console.log( 'PARTE RE: " . $parte_re . "' );</script>";
-        echo "<script>console.log( 'SENTENCA: " . $pro_improcedente . "' );</script>";
+        $query = "SELECT * FROM processos";
 
-        if ($parte_re === '' and $pro_improcedente === ''){
-        
-            $query = "SELECT * FROM processos WHERE magistrado LIKE '%{$magistrado}%'";
-
-            echo "<script>console.log( 'ENTROU NO IF' );</script>";
-
+        if($nrprocesso != ''){
+            $query = $query . " WHERE nrprocesso LIKE '%{$nrprocesso}%'";
             return $this->banco->query($query);
-        
-        } elseif ($parte_re === '') {
-
-            $query = "SELECT * FROM processos WHERE magistrado LIKE '%{$magistrado}%' AND pro_improcedente LIKE '%{$pro_improcedente}%'";
-
-            echo "<script>console.log( 'ENTROU NO ELSEIF' );</script>";
-
-            //echo "<script>console.log( 'QUERY: " . $query . "' );</script>";
-
-            return $this->banco->query($query);
-
-        } else {
-
-            $query = "SELECT * FROM processos WHERE magistrado LIKE '%{$magistrado}%' AND parte_re LIKE '%{$parte_re}%' AND pro_improcedente LIKE '%{$pro_improcedente}%'";
-
-            echo "<script>console.log( 'ENTROU NO ELSE' );</script>";
-
-            //echo "<script>console.log( 'QUERY: " . $query . "' );</script>";
-
-            return $this->banco->query($query);
-
         }
+
+        if($magistrado != ''){
+            $query = $query . " WHERE magistrado LIKE '%{$magistrado}%'";
+        } 
+
+        if($parte_re != ''){
+            if($magistrado === ''){
+                $query = $query . " WHERE parte_re LIKE '%{$parte_re}%'";
+            } else {
+                $query = $query . " AND parte_re LIKE '%{$parte_re}%'";
+            }
+        }
+
+        if($pro_improcedente != ''){
+            if($parte_re === '' and $magistrado === ''){
+                $query = $query . " WHERE pro_improcedente LIKE '%{$pro_improcedente}%'";
+            } else {
+                $query = $query . " AND pro_improcedente LIKE '%{$pro_improcedente}%'";
+            }
+        }
+
+        return $this->banco->query($query);
 
     }
 

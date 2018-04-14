@@ -16,6 +16,7 @@
   <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
   <link href="css/sb-admin.css" rel="stylesheet">
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 </head>
 
@@ -170,13 +171,26 @@
 
       <form method="POST">
         <div class="row">
-          <div class="col-lg-4">
+          <div class="col-lg-3">
             <div class="form-group">
-              <label for="labelMagistrado">Nome do Magistrado:</label>
-              <input required="required" type="text2" class="form-control" name="nomeMagistrado" id="nomeMagistrado" placeholder="Digite o nome do Magistrado">
+              <script>
+                function formatar(formatoDaEntrada, input){
+                var i = input.value.length;
+
+                var saida = formatoDaEntrada.substring(0,1);
+                var texto = formatoDaEntrada.substring(i)
+
+                if (texto.substring(0,1) != saida){
+                  input.value += texto.substring(0,1);
+                }
+              }
+              </script>
+              <label for="labelSentenca">Nº Processo:</label>
+              <input type="text2" class="form-control" name="numeroProcesso" maxlength="25" placeholder="Ex.: XXXXXXX-XX.XXXX.X.XX.XXXX" OnKeyPress="formatar('9999999-99.9999.9.99.9999', this)" >
+
             </div>
           </div>
-          <div class="col-lg-4">
+          <div class="col-lg-5">
             <div class="form-group">
               <label for="labelParteRe">Parte Ré:</label>
               <input type="text2" class="form-control" name="nomeParteRe" id="nomeParteRe" placeholder="Digite a Parte Ré">
@@ -194,7 +208,21 @@
             </div>
           </div>
         </div>
-        <input style="margin: 0 0 15px 0;" type="submit" name="submit" value="Filter" /> 
+
+        <div class="row">
+          <div class="col-lg-3">
+            <div class="form-group">
+              <label for="labelMagistrado">Nome do Magistrado:</label>
+              <input type="text2" class="form-control" name="nomeMagistrado" id="nomeMagistrado" placeholder="Digite o nome do Magistrado">
+              
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group">
+              <input style="margin-top: 31px;; background-color: #343a40!important; border-color: #343a40!important;" type="submit" name="submit" class="btn btn-primary upload" value="Filtrar">
+            </div>
+          </div>
+        </div>
       </form>
 
 
@@ -257,18 +285,33 @@
                       $magistrado = utf8_decode($_POST['nomeMagistrado']);
                       $parte_re = utf8_decode($_POST['nomeParteRe']);
                       $pro_improcedente = $_POST['selectSetenca'];
+                      $nrprocesso = $_POST['numeroProcesso'];
                     
-                      $resultado = $database->searchMagistrado($magistrado,$parte_re,$pro_improcedente);
+                      $resultado = $database->searchMagistrado($magistrado,$parte_re,$pro_improcedente,$nrprocesso);
 
                       while ($row = $resultado->fetch_assoc()) {
-                        echo "<tr>\n" . 
-                        "<td><a href=\"http://localhost/peticoes/" . utf8_encode($row['nrprocesso']) . ".pdf\">" . utf8_encode($row['nrprocesso']) . "</a></td>\n" .
-                        "<td>" . utf8_encode($row['magistrado']) . "</td>\n" .
-                        "<td>" . utf8_encode($row['parte_autora']) . "</td>\n" .
-                        "<td>" . utf8_encode($row['parte_re']) . "</td>\n" .
-                        "<td>" . utf8_encode($row['classe_processual']) . "</td>\n" .
-                        "<td>" . utf8_encode($row['pro_improcedente']) . "</td>\n" .
-                        "</tr>\n";
+                        echo "<tr>\n"; 
+                        echo "<td><a href=\"http://localhost/peticoes/" . utf8_encode($row['nrprocesso']) . ".pdf\">" . utf8_encode($row['nrprocesso']) . "</a></td>\n";
+                        echo "<td>" . utf8_encode($row['magistrado']) . "</td>\n";
+                        echo "<td>" . utf8_encode($row['parte_autora']) . "</td>\n";
+                        echo "<td>" . utf8_encode($row['parte_re']) . "</td>\n";
+                        echo "<td>" . utf8_encode($row['classe_processual']) . "</td>\n";
+
+                        if (utf8_encode($row['pro_improcedente']) == "P"){
+
+                          echo "<td><a href=\"http://localhost/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-success\">PROCEDENTE</span> </a></td>\n";
+
+                        } elseif (utf8_encode($row['pro_improcedente']) == "I"){
+
+                          echo "<td><a href=\"http://localhost/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-danger\">IMPROCEDENTE</span> </a></td>\n";
+
+                        } else {
+
+                          echo "<td><span class=\"badge badge-default\">EM ANDAMENTO</span></td>\n";
+
+                        }
+
+                        echo "</tr>\n";
                       }
 
                     }
