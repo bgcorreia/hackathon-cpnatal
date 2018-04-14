@@ -25,6 +25,14 @@ class justicafacilDatabase {
   
     }
 
+    public function listAssuntos(){
+
+        $query = "SELECT DISTINCT assunto FROM processos ORDER BY assunto";
+
+        return $this->banco->query($query);
+  
+    }
+
     public function searchClasses($classe){
 
         $query = "SELECT nrprocesso,parte_autora,parte_re,classe_processual FROM processos WHERE classe_processual LIKE '%{$classe}%' ORDER BY nrprocesso";
@@ -41,7 +49,7 @@ class justicafacilDatabase {
   
     }
 
-    public function searchMagistrado($magistrado,$parte_re,$pro_improcedente,$nrprocesso){
+    public function searchMagistrado($magistrado,$parte_re,$pro_improcedente,$nrprocesso,$assunto){
 
         $query = "SELECT * FROM processos";
 
@@ -67,6 +75,14 @@ class justicafacilDatabase {
                 $query = $query . " WHERE pro_improcedente LIKE '%{$pro_improcedente}%'";
             } else {
                 $query = $query . " AND pro_improcedente LIKE '%{$pro_improcedente}%'";
+            }
+        }
+
+        if($assunto != ''){
+            if($parte_re === '' and $magistrado === '' and $pro_improcedente === ''){
+                $query = $query . " WHERE assunto LIKE '%{$assunto}%'";
+            } else {
+                $query = $query . " AND assunto LIKE '%{$assunto}%'";
             }
         }
 
