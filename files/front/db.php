@@ -74,6 +74,41 @@ class justicafacilDatabase {
 
     }
 
+    public function graficoProcesso($magistrado,$parte_re,$pro_improcedente,$nrprocesso){
+
+        //$query = "SELECT pro_improcedente, COUNT(*) FROM processos group by pro_improcedente";
+        $query = "SELECT pro_improcedente as tipos, COUNT(*) as quant FROM processos group by pro_improcedente";
+
+        if($nrprocesso != ''){
+            $query = $query . " WHERE nrprocesso LIKE '%{$nrprocesso}%'";
+
+            return $this->banco->query($query);
+        }
+
+        if($magistrado != ''){
+            $query = $query . " WHERE magistrado LIKE '%{$magistrado}%'";
+        } 
+
+        if($parte_re != ''){
+            if($magistrado === ''){
+                $query = $query . " WHERE parte_re LIKE '%{$parte_re}%'";
+            } else {
+                $query = $query . " AND parte_re LIKE '%{$parte_re}%'";
+            }
+        }
+
+        if($pro_improcedente != ''){
+            if($parte_re === '' and $magistrado === ''){
+                $query = $query . " WHERE pro_improcedente LIKE '%{$pro_improcedente}%'";
+            } else {
+                $query = $query . " AND pro_improcedente LIKE '%{$pro_improcedente}%'";
+            }
+        }
+
+        return $this->banco->query($query);
+
+    }
+
 }
 
 ?>

@@ -4,9 +4,9 @@ services:
 
     nginx:
         build: ./nginx
+        container_name: nginx_jf
         ports:
             - "80:80"
-        container_name: nginx_jf
         restart: always
         volumes:
             - ./files/front:/var/www/html

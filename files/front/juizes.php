@@ -18,7 +18,28 @@
   <link href="css/sb-admin.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <link type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet"/>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  
 </head>
+<script type="text/javascript">
+    $(document).ready(function() {
+         
+        // Captura o retorno do retornaCliente.php
+        $.getJSON('retornaMagistrado.php', function(data){
+            var cliente = [];
+             
+            // Armazena na array capturando somente o nome do cliente
+            $(data).each(function(key, value) {
+                cliente.push(value.cliente);
+            });
+             
+            // Chamo o Auto complete do JQuery ui setando o id do input, array com os dados e o mínimo de caracteres para disparar o AutoComplete
+            $('#nomeMagistrado').autocomplete({ source: cliente, minLength: 3});
+        });
+    });
+</script>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
   <?php include("db.php"); $database = new justicafacilDatabase();?>
@@ -213,7 +234,7 @@
           <div class="col-lg-3">
             <div class="form-group">
               <label for="labelMagistrado">Nome do Magistrado:</label>
-              <input type="text2" class="form-control" name="nomeMagistrado" id="nomeMagistrado" placeholder="Digite o nome do Magistrado">
+              <input type="text" class="form-control" name="nomeMagistrado" id="nomeMagistrado" placeholder="Digite o nome do Magistrado">
               
             </div>
           </div>
@@ -225,6 +246,153 @@
         </div>
       </form>
 
+    <div class="row">
+
+      <div class="col-lg-6" style="margin: 0 0 10px 0;">
+        <canvas id="myChart2"></canvas>
+          <script>
+          var ctx = document.getElementById("myChart2").getContext('2d');
+          var myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                  datasets: [{
+                      label: '# of Votes',
+                      data: [12, 19, 3, 5, 2, 3],
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255,99,132,1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero:true
+                          }
+                      }]
+                  }
+              }
+          });
+          </script>
+        </div>
+
+      <div class="col-lg-6" style="margin: 0 0 10px 0;">
+        <canvas id="myChart3"></canvas>
+          <?php 
+            $array=array
+            (
+                '0' => array
+                    (
+                        'product' => '4387'
+                    ),
+                '1' => array
+                    (
+                        'product' => '5421'
+                    ),
+                '2' => array
+                    (
+                        'product' => '52038'
+                    )
+            );
+
+          ?>
+
+
+          <script>
+            var data=[];
+          
+          <?php
+
+          if ( isset($_POST['submit']) ) {
+
+              $magistrado = utf8_decode($_POST['nomeMagistrado']);
+              $parte_re = utf8_decode($_POST['nomeParteRe']);
+              $pro_improcedente = $_POST['selectSetenca'];
+              $nrprocesso = $_POST['numeroProcesso'];
+
+              $grafico = $database->graficoProcesso($magistrado,$parte_re,$pro_improcedente,$nrprocesso);
+
+            if( $magistrado === '' and $parte_re === '' and  $pro_improcedente === '' and  $nrprocesso === '' ){
+              echo "alert('Preencha pelo menos um dos campos 2');";
+            } else {
+              $grafico = $database->graficoProcesso($magistrado,$parte_re,$pro_improcedente,$nrprocesso);
+            }
+
+            //$row = mysql_query("SELECT * pro_improcedente FROM processos WHERE nrprocesso LIKE $nrprocesso", );
+            //$num_row = mysqli_fecth_row($row); <- quantidade total de linhas em pro_improcedente
+
+            //quantidade em processo - 2 / num_row 
+            //4 / num_row
+            //4 / num_row 
+
+            //ex quant de improcedente = 10
+            //   total = 20
+            //   porcentagem de improcedente  = (10/20);
+
+            echo $num_row;
+
+            foreach($grafico as $tem)
+            {
+
+           ?>;
+
+
+        
+          <?php }
+
+          }
+
+          ?>
+          var ctx = document.getElementById("myChart3").getContext('2d');
+          var myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: ["Improcedente", "Procedente", "Sem julgamento"],
+                  datasets: [{
+                      label: '# of Votes',
+                      data: data,
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255,99,132,1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero:true
+                          }
+                      }]
+                  }
+              }
+          });
+          </script>
+
+    </div>
+
 
       <div class="col-lg-12" style="margin: 0 0 10px 0;">
 
@@ -235,33 +403,8 @@
             }
           </style>
 
-          <canvas id="myChart" width="1024" style="height: 200px; margin: 0; "></canvas>
-          <script>
-            // Nossos rótulos para o eixo X
-            var years = [1500,1600,1700,1750,1800,1850,1900,1950,1999,2050];
+          
 
-            // Para desenhar as linhas
-            var africa = [86,114,106,106,107,111,133,221,783,2478];
-            var asia = [282,350,411,502,635,809,947,1402,3700,5267];
-            var europe = [168,170,178,190,203,276,408,547,675,734];
-            var latinAmerica = [40,20,10,16,24,38,74,167,508,784];
-            var northAmerica = [6,3,2,2,7,26,82,172,312,433];
-
-            var ctx = document.getElementById("myChart");
-            var myChart = new Chart(ctx, {
-              type: 'line',
-              data: {
-                labels: years,
-                datasets: [
-                  { 
-                    data: africa,
-                    label: "Categoria"
-                  }
-                ]
-              }
-            });
-
-          </script>
         </div>
 
         <div class="card-body">
@@ -286,32 +429,37 @@
                       $parte_re = utf8_decode($_POST['nomeParteRe']);
                       $pro_improcedente = $_POST['selectSetenca'];
                       $nrprocesso = $_POST['numeroProcesso'];
-                    
-                      $resultado = $database->searchMagistrado($magistrado,$parte_re,$pro_improcedente,$nrprocesso);
 
-                      while ($row = $resultado->fetch_assoc()) {
-                        echo "<tr>\n"; 
-                        echo "<td><a href=\"http://localhost/peticoes/" . utf8_encode($row['nrprocesso']) . ".pdf\">" . utf8_encode($row['nrprocesso']) . "</a></td>\n";
-                        echo "<td>" . utf8_encode($row['magistrado']) . "</td>\n";
-                        echo "<td>" . utf8_encode($row['parte_autora']) . "</td>\n";
-                        echo "<td>" . utf8_encode($row['parte_re']) . "</td>\n";
-                        echo "<td>" . utf8_encode($row['classe_processual']) . "</td>\n";
+                      if( $magistrado === '' and $parte_re === '' and  $pro_improcedente === '' and  $nrprocesso === '' ){
+                        echo "<script>alert('Preencha pelo menos um dos campos');</script>";
+                      } else {
 
-                        if (utf8_encode($row['pro_improcedente']) == "P"){
+                        $resultado = $database->searchMagistrado($magistrado,$parte_re,$pro_improcedente,$nrprocesso);
 
-                          echo "<td><a href=\"http://localhost/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-success\">PROCEDENTE</span> </a></td>\n";
+                        while ($row = $resultado->fetch_assoc()) {
+                          echo "<tr>\n"; 
+                          echo "<td><a href=\"http://localhost/peticoes/" . utf8_encode($row['nrprocesso']) . ".pdf\">" . utf8_encode($row['nrprocesso']) . "</a></td>\n";
+                          echo "<td>" . utf8_encode($row['magistrado']) . "</td>\n";
+                          echo "<td>" . utf8_encode($row['parte_autora']) . "</td>\n";
+                          echo "<td>" . utf8_encode($row['parte_re']) . "</td>\n";
+                          echo "<td>" . utf8_encode($row['classe_processual']) . "</td>\n";
 
-                        } elseif (utf8_encode($row['pro_improcedente']) == "I"){
+                          if (utf8_encode($row['pro_improcedente']) == "P"){
 
-                          echo "<td><a href=\"http://localhost/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-danger\">IMPROCEDENTE</span> </a></td>\n";
+                            echo "<td><a href=\"http://localhost/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-success\">PROCEDENTE</span> </a></td>\n";
 
-                        } else {
+                          } elseif (utf8_encode($row['pro_improcedente']) == "I"){
 
-                          echo "<td><span class=\"badge badge-default\">EM ANDAMENTO</span></td>\n";
+                            echo "<td><a href=\"http://localhost/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-danger\">IMPROCEDENTE</span> </a></td>\n";
 
+                          } else {
+
+                            echo "<td><span class=\"badge badge-default\">EM ANDAMENTO</span></td>\n";
+
+                          }
+
+                          echo "</tr>\n";
                         }
-
-                        echo "</tr>\n";
                       }
 
                     }
