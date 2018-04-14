@@ -268,10 +268,10 @@
           var myChart = new Chart(ctx, {
               type: 'bar',
               data: {
-                  labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                  labels: ["1/3 de férias", "Abuso de Poder","Anuidade OAB", "Curso de Formação", "Perdas e danos"],
                   datasets: [{
-                      label: '# of Votes',
-                      data: [12, 19, 3, 5, 2, 3],
+                      label: '# Limpar',
+                      data: [591, 282,922, 73, 180],
                       backgroundColor: [
                           'rgba(255, 99, 132, 0.2)',
                           'rgba(54, 162, 235, 0.2)',
@@ -380,7 +380,7 @@
 
                   datasets: [{
 
-                      label: '# of Votes',
+                      label: '# Limpar',
                       data: [4387,5421,52038],
                       backgroundColor: [
                           'rgba(255, 99, 132, 0.2)',
@@ -455,7 +455,7 @@
 
                         while ($row = $resultado->fetch_assoc()) {
                           echo "<tr>\n"; 
-                          echo "<td><a target='_blank' href=\"http://localhost/peticoes/" . utf8_encode($row['nrprocesso']) . ".pdf\">" . utf8_encode($row['nrprocesso']) . "</a></td>\n";
+                          echo "<td><a target='_blank' href=\"https://justicafacil.com//peticoes/" . utf8_encode($row['nrprocesso']) . ".pdf\">" . utf8_encode($row['nrprocesso']) . "</a></td>\n";
                           echo "<td>" . utf8_encode($row['magistrado']) . "</td>\n";
                           echo "<td>" . utf8_encode($row['parte_autora']) . "</td>\n";
                           echo "<td>" . utf8_encode($row['parte_re']) . "</td>\n";
@@ -463,11 +463,11 @@
 
                           if (utf8_encode($row['pro_improcedente']) == "P"){
 
-                            echo "<td><a target='_blank' href=\"http://localhost/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-success\">PROCEDENTE</span> </a></td>\n";
+                            echo "<td><a target='_blank' href=\"https://justicafacil.com/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-success\">PROCEDENTE</span> </a></td>\n";
 
                           } elseif (utf8_encode($row['pro_improcedente']) == "I"){
 
-                            echo "<td><a target='_blank' href=\"http://localhost/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-danger\">IMPROCEDENTE</span> </a></td>\n";
+                            echo "<td><a target='_blank' href=\"https://justicafacil.com/sentenca/" . utf8_encode($row['nrprocesso']) . ".pdf\"> <span class=\"badge badge-danger\">IMPROCEDENTE</span> </a></td>\n";
 
                           } else {
 
